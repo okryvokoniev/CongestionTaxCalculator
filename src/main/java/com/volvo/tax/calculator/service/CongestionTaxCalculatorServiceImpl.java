@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collections;
@@ -73,17 +74,21 @@ public class CongestionTaxCalculatorServiceImpl implements CongestionTaxCalculat
 
     private int calculateTaxAmount(TaxConfiguration configuration,
                                    Map<LocalDateTime, Set<LocalDateTime>> groupedDates) {
-        int result = 0;
+        Map<LocalDate, Integer> resultPerDay = new HashMap<>();
         for (Map.Entry<LocalDateTime, Set<LocalDateTime>> entry : groupedDates.entrySet()) {
-            result += entry.getValue().stream()
+            int maxPerHour = entry.getValue().stream()
                     .mapToInt(date -> getTaxAmount(date, configuration.getTaxPeriods()))
                     .max()
                     .orElse(0);
-            if (result > configuration.getMaxTaxAmountPerDay()) {
-                return configuration.getMaxTaxAmountPerDay();
+
+            Integer value = maxPerHour;
+            if (resultPerDay.containsKey(entry.getKey().toLocalDate())) {
+                Integer sum = resultPerDay.get(entry.getKey().toLocalDate()) + maxPerHour;
+                value =  sum > configuration.getMaxTaxAmountPerDay() ? configuration.getMaxTaxAmountPerDay() : sum;
             }
+            resultPerDay.put(entry.getKey().toLocalDate(), value);
         }
-        return result;
+        return resultPerDay.values().stream().mapToInt(Integer::intValue).sum();
     }
 
     private int getTaxAmount(LocalDateTime date, Set<TimeRule> timeRules) {

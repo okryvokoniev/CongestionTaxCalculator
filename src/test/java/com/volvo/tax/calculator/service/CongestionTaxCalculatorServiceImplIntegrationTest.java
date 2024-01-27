@@ -25,12 +25,21 @@ class CongestionTaxCalculatorServiceImplIntegrationTest {
                         LocalDateTime.of(2013, 2, 8, 6, 27, 0),
                         LocalDateTime.of(2013, 2, 8, 7, 21, 0),
                         LocalDateTime.of(2013, 2, 8, 7, 27, 0),
-                        LocalDateTime.of(2013, 2, 8, 8, 5, 0)))
+                        LocalDateTime.of(2013, 2, 8, 8, 5, 0),
+                        LocalDateTime.of(2013, 2, 11, 6, 27, 0),
+                        LocalDateTime.of(2013, 2, 11, 7, 21, 0),
+                        LocalDateTime.of(2013, 2, 11, 8, 27, 0),
+                        LocalDateTime.of(2013, 2, 11, 9, 5, 0),
+                        LocalDateTime.of(2013, 2, 11, 10, 27, 0),
+                        LocalDateTime.of(2013, 2, 11, 11, 28, 0),
+                        LocalDateTime.of(2013, 2, 11, 12, 29, 0),
+                        LocalDateTime.of(2013, 2, 11, 15, 30, 0),
+                        LocalDateTime.of(2013, 2, 11, 16, 30, 0)))
                 .build();
 
         int result = service.getTaxAmount(request);
 
-        assertEquals(26, result);
+        assertEquals(86, result);
     }
 
     @Test
